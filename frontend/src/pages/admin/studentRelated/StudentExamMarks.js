@@ -11,7 +11,8 @@ import {
     Box, InputLabel,
     MenuItem, Select,
     Typography, Stack,
-    TextField, CircularProgress, FormControl
+    TextField, CircularProgress, FormControl,
+    Card, CardContent, Alert
 } from '@mui/material';
 
 const StudentExamMarks = ({ situation }) => {
@@ -75,88 +76,116 @@ const StudentExamMarks = ({ situation }) => {
         else if (error) {
             setLoader(false)
             setShowPopup(true)
-            setMessage("error")
+            setMessage("Error: Unable to update marks")
         }
         else if (statestatus === "added") {
             setLoader(false)
             setShowPopup(true)
-            setMessage("Done Successfully")
+            setMessage("Marks updated successfully!")
         }
     }, [response, statestatus, error])
 
     return (
         <>
-            {loading
-                ?
-                <>
-                    <div>Loading...</div>
-                </>
-                :
-                <>
-                    <Box
+            {loading ? (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        minHeight: '100vh',
+                    }}
+                >
+                    <CircularProgress size={60} />
+                </Box>
+            ) : (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        minHeight: '100vh',
+                        padding: 3,
+                        backgroundColor: '#f4f6f9',
+                    }}
+                >
+                    <Card
                         sx={{
-                            flex: '1 1 auto',
-                            alignItems: 'center',
-                            display: 'flex',
-                            justifyContent: 'center'
+                            maxWidth: 600,
+                            width: '100%',
+                            padding: 3,
+                            boxShadow: 3,
+                            borderRadius: 4,
+                            backgroundColor: 'white',
                         }}
                     >
-                        <Box
-                            sx={{
-                                maxWidth: 550,
-                                px: 3,
-                                py: '100px',
-                                width: '100%'
-                            }}
-                        >
-                            <Stack spacing={1} sx={{ mb: 3 }}>
-                                <Typography variant="h4">
-                                    Student Name: {userDetails.name}
+                        <CardContent>
+                            <Typography
+                                variant="h4"
+                                sx={{
+                                    mb: 2,
+                                    textAlign: 'center',
+                                    fontWeight: 'bold',
+                                    color: '#3f51b5',
+                                }}
+                            >
+                                Update Student Marks
+                            </Typography>
+                            <Typography
+                                variant="h6"
+                                sx={{ textAlign: 'center', mb: 2 }}
+                            >
+                                Student Name: <strong>{userDetails.name}</strong>
+                            </Typography>
+                            {currentUser.teachSubject && (
+                                <Typography
+                                    variant="h6"
+                                    sx={{ textAlign: 'center', mb: 3 }}
+                                >
+                                    Subject: <strong>{currentUser.teachSubject?.subName}</strong>
                                 </Typography>
-                                {currentUser.teachSubject &&
-                                    <Typography variant="h4">
-                                        Subject Name: {currentUser.teachSubject?.subName}
-                                    </Typography>
-                                }
-                            </Stack>
+                            )}
                             <form onSubmit={submitHandler}>
                                 <Stack spacing={3}>
-                                    {
-                                        situation === "Student" &&
+                                    {situation === "Student" && (
                                         <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label">
-                                                Select Subject
-                                            </InputLabel>
+                                            <InputLabel>Select Subject</InputLabel>
                                             <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
                                                 value={subjectName}
-                                                label="Choose an option"
-                                                onChange={changeHandler} required
+                                                onChange={changeHandler}
+                                                label="Choose Subject"
+                                                required
                                             >
-                                                {subjectsList ?
+                                                {subjectsList ? (
                                                     subjectsList.map((subject, index) => (
                                                         <MenuItem key={index} value={subject.subName}>
                                                             {subject.subName}
                                                         </MenuItem>
                                                     ))
-                                                    :
-                                                    <MenuItem value="Select Subject">
-                                                        Add Subjects For Marks
+                                                ) : (
+                                                    <MenuItem value="Select Subject" disabled>
+                                                        No Subjects Available
                                                     </MenuItem>
-                                                }
+                                                )}
                                             </Select>
                                         </FormControl>
-                                    }
+                                    )}
                                     <FormControl>
-                                        <TextField type="number" label='Enter marks'
-                                            value={marksObtained} required
+                                        <TextField
+                                            type="number"
+                                            label="Enter Marks"
+                                            value={marksObtained}
+                                            required
                                             onChange={(e) => setMarksObtained(e.target.value)}
                                             InputLabelProps={{
                                                 shrink: true,
                                             }}
+                                            fullWidth
                                         />
                                     </FormControl>
+                                    {marksObtained && marksObtained < 0 && (
+                                        <Alert severity="error">Marks cannot be negative!</Alert>
+                                    )}
                                 </Stack>
                                 <BlueButton
                                     fullWidth
@@ -164,18 +193,23 @@ const StudentExamMarks = ({ situation }) => {
                                     sx={{ mt: 3 }}
                                     variant="contained"
                                     type="submit"
-                                    disabled={loader}
+                                    disabled={loader || marksObtained < 0}
                                 >
-                                    {loader ? <CircularProgress size={24} color="inherit" /> : "Submit"}
+                                    {loader ? (
+                                        <CircularProgress size={24} color="inherit" />
+                                    ) : (
+                                        "Submit Marks"
+                                    )}
                                 </BlueButton>
                             </form>
-                        </Box>
-                    </Box>
-                    <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
-                </>
-            }
+                        </CardContent>
+                    </Card>
+                </Box>
+            )}
+
+            <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
         </>
-    )
+    );
 }
 
-export default StudentExamMarks
+export default StudentExamMarks;

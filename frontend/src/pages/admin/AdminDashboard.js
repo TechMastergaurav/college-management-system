@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import {
-    CssBaseline,
-    Box,
-    Toolbar,
-    List,
-    Typography,
-    Divider,
-    IconButton,
-} from '@mui/material';
+import { CssBaseline, Box, Toolbar, List, Typography, Divider, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { Navigate, Route, Routes } from 'react-router-dom';
@@ -52,8 +44,8 @@ const AdminDashboard = () => {
         <>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
-                <AppBar open={open} position='absolute'>
-                    <Toolbar sx={{ pr: '24px' }}>
+                <AppBar open={open} position="absolute">
+                    <Toolbar sx={{ pr: '24px', backgroundColor: '#3f51b5' }}>
                         <IconButton
                             edge="start"
                             color="inherit"
@@ -78,6 +70,7 @@ const AdminDashboard = () => {
                         <AccountMenu />
                     </Toolbar>
                 </AppBar>
+
                 <Drawer variant="permanent" open={open} sx={open ? styles.drawerStyled : styles.hideDrawer}>
                     <Toolbar sx={styles.toolBarStyled}>
                         <IconButton onClick={toggleDrawer}>
@@ -89,6 +82,7 @@ const AdminDashboard = () => {
                         <SideBar />
                     </List>
                 </Drawer>
+
                 <Box component="main" sx={styles.boxStyled}>
                     <Toolbar />
                     <Routes>
@@ -140,9 +134,9 @@ const AdminDashboard = () => {
             </Box>
         </>
     );
-}
+};
 
-export default AdminDashboard
+export default AdminDashboard;
 
 const styles = {
     boxStyled: {
@@ -153,6 +147,11 @@ const styles = {
         flexGrow: 1,
         height: '100vh',
         overflow: 'auto',
+        padding: '20px',
+        display: 'flex',
+        justifyContent: 'center',  // Center horizontally
+        alignItems: 'center',      // Center vertically
+        transition: 'background-color 0.3s ease',
     },
     toolBarStyled: {
         display: 'flex',
@@ -161,12 +160,15 @@ const styles = {
         px: [1],
     },
     drawerStyled: {
-        display: "flex"
+        width: '240px',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        backgroundColor: '#263238',
+        color: 'white',
     },
     hideDrawer: {
-        display: 'flex',
-        '@media (max-width: 600px)': {
-            display: 'none',
-        },
+        display: 'none',
     },
-}
+};
+
